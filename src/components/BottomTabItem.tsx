@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
-  FadeIn,
   FadeInUp,
   FadeOut,
-  FadeOutDown,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { Tabs } from "../constant";
+import { AnimatedMaskImage } from "./AnimatedMaskImage";
 
 export interface IBottomTabItemProps {
   tab: typeof Tabs[keyof typeof Tabs];
@@ -29,7 +28,7 @@ export const BottomTabItem: React.FC<IBottomTabItemProps> = ({
       height: 20,
       left: 8,
       borderRadius: 10,
-      backgroundColor: "rgba(255, 225, 93, 0.5)",
+      backgroundColor: "rgba(255, 225, 93, 0.3)",
       position: "absolute",
     };
   });
@@ -54,18 +53,7 @@ export const BottomTabItem: React.FC<IBottomTabItemProps> = ({
             style={animatedCircleStyle}
           />
         ) : null}
-        <Animated.Image
-          entering={FadeIn.duration(250)}
-          exiting={FadeOut.duration(250)}
-          source={isActive ? tab.activeIcon : tab.icon}
-          style={[
-            styles.icon,
-            isActive
-              ? { tintColor: "rgba(76, 73, 76, 1)" }
-              : { tintColor: "rgba(210, 206, 213, 1)" },
-          ]}
-          resizeMode="contain"
-        />
+        <AnimatedMaskImage icon={tab.icon} isActive={isActive} />
       </View>
       <Animated.View style={style} />
     </TouchableOpacity>

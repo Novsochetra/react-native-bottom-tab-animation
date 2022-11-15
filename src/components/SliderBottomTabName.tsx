@@ -28,7 +28,7 @@ export const SliderBottomTabName: React.FC<ISliderBottomTabNameProps> = ({
       position: "absolute",
       fontWeight: "700",
       bottom: 12,
-      fontWeight: "bold",
+      color: "gray",
       transform: [{ translateX: translateX.value }],
     };
   });
