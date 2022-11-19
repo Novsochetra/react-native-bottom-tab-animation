@@ -1,54 +1,52 @@
-import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View, LayoutChangeEvent } from "react-native";
 import Animated, {
-  withTiming,
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
-import { BOTTOM_TAB_ITEM } from "../constant";
-import { BottomTabItem } from "./BottomTabItem";
+import { BOTTOM_TAB_ITEM, Pallete } from "../constant";
 
 export interface ISliderBottomTabNameProps {
-  label: string;
   index: number;
+  label: string;
 }
 
-export const SliderBottomTabName: React.FC<ISliderBottomTabNameProps> = ({
-  label,
-  index,
-}) => {
+export const SliderBottomTabName: React.FC<ISliderBottomTabNameProps> = (
+  props
+) => {
   const translateX = useSharedValue(0);
-  const [width, setWidth] = useState<number | null>(null);
+  const [textWidth, setTextWidth] = React.useState<number | null>(null);
 
-  const style = useAnimatedStyle(() => {
+  const animatedStyle = useAnimatedStyle(() => {
     return {
-      fontSize: 11,
-      fontFamily: "Nunito-Bold",
       position: "absolute",
-      fontWeight: "700",
-      bottom: 12,
-      color: "gray",
+      fontFamily: "Nunito-Bold",
+      fontSize: 11,
+      color: Pallete.SECONDARY,
+      bottom: 8,
       transform: [{ translateX: translateX.value }],
     };
   });
 
-  useEffect(() => {
-    if (width) {
+  React.useEffect(() => {
+    if (textWidth) {
+      // we need to center the text
       translateX.value = withTiming(
-        index * BOTTOM_TAB_ITEM.width + (BOTTOM_TAB_ITEM.width - width) / 2
+        props.index * BOTTOM_TAB_ITEM.width +
+          (BOTTOM_TAB_ITEM.width - textWidth) / 2,
+        { duration: 250 }
       );
     }
-  }, [width]);
+  }, [textWidth]);
+
+  const onLayout = ({ nativeEvent }: LayoutChangeEvent) => {
+    setTextWidth(nativeEvent.layout.width);
+  };
 
   return (
-    <Animated.Text
-      style={style}
-      onLayout={({ nativeEvent }) => {
-        setWidth(nativeEvent.layout.width);
-      }}
-    >
-      {label}
+    <Animated.Text style={animatedStyle} onLayout={onLayout}>
+      {props.label}
     </Animated.Text>
   );
 };

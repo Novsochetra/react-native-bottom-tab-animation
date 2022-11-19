@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
+  FadeInDown,
   FadeInUp,
   FadeOut,
+  FadeOutDown,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { Tabs } from "../constant";
-import { AnimatedMaskImage } from "./AnimatedMaskImage";
+import { Pallete, Tabs } from "../constant";
+import { AnimatedMaskedImage } from "./AnimatedMaskedImage";
 
 export interface IBottomTabItemProps {
   tab: typeof Tabs[keyof typeof Tabs];
@@ -16,46 +18,44 @@ export interface IBottomTabItemProps {
   onPress: (tab: typeof Tabs[keyof typeof Tabs]) => void;
 }
 
-export const BottomTabItem: React.FC<IBottomTabItemProps> = ({
-  tab,
-  isActive,
-  onPress,
-}) => {
+export const BottomTabItem: React.FC<IBottomTabItemProps> = (props) => {
   const height = useSharedValue(0);
+
+  const animatedLabelStyle = useAnimatedStyle(() => {
+    return {
+      height: props.isActive ? withTiming(20) : withTiming(0),
+      width: "100%",
+    };
+  });
+
   const animatedCircleStyle = useAnimatedStyle(() => {
     return {
       width: 20,
       height: 20,
-      left: 8,
-      borderRadius: 10,
-      backgroundColor: "rgba(255, 225, 93, 0.3)",
       position: "absolute",
+      borderRadius: 10,
+      left: 8,
+      top: -4,
+      backgroundColor: Pallete.YELLOW_30,
     };
   });
-  const style = useAnimatedStyle(() => {
-    return {
-      width: "100%",
-      height: height.value,
-    };
-  });
-
-  useEffect(() => {
-    height.value = withTiming(isActive ? 20 : 0);
-  }, [isActive]);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={() => onPress(tab)}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => props.onPress(props.tab)}
+    >
       <View>
-        {isActive ? (
+        {props.isActive ? (
           <Animated.View
             entering={FadeInUp}
             exiting={FadeOut}
             style={animatedCircleStyle}
           />
         ) : null}
-        <AnimatedMaskImage icon={tab.icon} isActive={isActive} />
+        <AnimatedMaskedImage icon={props.tab.icon} isActive={props.isActive} />
       </View>
-      <Animated.View style={style} />
+      <Animated.View style={animatedLabelStyle} />
     </TouchableOpacity>
   );
 };
@@ -65,11 +65,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  icon: {
-    width: 20,
-    height: 20,
-    // tintColor: "lightgray",
   },
 });

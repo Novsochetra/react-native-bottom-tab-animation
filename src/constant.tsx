@@ -35,3 +35,11 @@ export const BOTTOM_TAB_ITEM = {
   width: (Dimensions.get("window").width - 32) / 4,
   height: 60,
 };
+
+export const Pallete = {
+  YELLOW_100: "rgba(255, 225, 93, 1)",
+  YELLOW_30: "rgba(255, 225, 93, 0.3)",
+  SECONDARY: "gray",
+  ICON_COLOR: "rgba(210, 206, 213, 1)",
+  WHITE: "white",
+};
